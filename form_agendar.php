@@ -59,7 +59,7 @@ $result = $conn->query($sql);
     <button type="submit">Agendar</button>
   </form>
 
-  <br><a href="painel.php">Voltar ao Painel</a>
+  <br><a href="painel_cliente.php">Voltar ao Painel</a>
 </div>
 </body>
 </html>
