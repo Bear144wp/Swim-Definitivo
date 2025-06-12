@@ -77,11 +77,11 @@ $result = $conn->query($sql);
     echo " | <span style='color: blue;'>Pago</span>";
   }
 
-  // Se a manutenção já foi concluída e ainda não foi avaliada, mostra botão de avaliação
+
   if ($row["status"] === "concluido" && empty($row["avaliacao"])) {
     echo " | <a href='avaliar_mecanico.php?id={$row['id']}'>Avaliar</a>";
   } 
-  // Senão, mostra que já foi avaliado
+
   elseif (!empty($row["avaliacao"])) {
     echo " | <span style='color: purple;'>Avaliado</span>";
   }
