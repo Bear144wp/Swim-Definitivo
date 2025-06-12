@@ -1,42 +1,53 @@
 <?php
 session_start();
 
-/*
-Verificação de segurança:
-Aqui a gente checa se a pessoa que entrou nessa página realmente está logada 
-(ou seja, tem o 'id' na sessão) e se ela é do tipo 'mecanico'.
-
-Isso evita que pessoas não autorizadas (tipo um cliente ou até alguém que nem logou) 
-acessem a área da mecânica digitando o link direto no navegador.
-*/
 if (!isset($_SESSION['id']) || $_SESSION['tipo'] != 'mecanico') {
-    // Se não passou na verificação, redireciona pra página inicial (index.php)
     header("Location: index.php");
-    exit(); // Encerra o script pra garantir que o resto da página não carregue
+    exit();
 }
-?>
 
+include("conexao.php");
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <title>Painel da Mecânica</title>
-    <link rel="stylesheet" href="estilo.css"> <!-- Link do CSS pro estilo da página -->
+    <link rel="stylesheet" href="estilo.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Mostra uma mensagem de boas-vindas com o nome do mecânico logado -->
-        <h1>Bem-vindo, <?php echo $_SESSION['nome']; ?>!</h1>
-        <p>Você está logado como <strong>Mecânica</strong>.</p>
+<div class="container">
+    <h1>Bem-vindo, <?php echo $_SESSION['nome']; ?>!</h1>
+    <p>Você está logado como <strong>Mecânica</strong>.</p>
 
-        <!-- Botão que leva pra página onde o mecânico vê os agendamentos recebidos -->
-        <a href="agendamentos_recebidos.php" class="btn">Ver Agendamentos</a><br><br>
+    <a href="agendamentos_recebidos.php" class="btn">Ver Agendamentos</a><br><br>
 
-        <!-- Botão de exemplo para conversar com um cliente específico (ID 11 no caso) -->
-        <a href="chat.php?cliente=11" class="btn">Falar com Cliente</a><br><br>
+    <h3>👤 Falar com um cliente</h3>
 
-        <!-- Botão para sair do sistema e encerrar a sessão -->
-        <a href="logout.php" class="btn">Sair</a>
-    </div>
+    <?php
+    $id_mecanico = $_SESSION['id'];
+
+    // Lista todos os clientes cadastrados
+    $sqlClientes = "SELECT id, nome FROM usuarios WHERE tipo = 'cliente'";
+    $resClientes = $conn->query($sqlClientes);
+
+    if ($resClientes->num_rows > 0):
+        while ($cliente = $resClientes->fetch_assoc()):
+    ?>
+        <p>
+            <?php echo $cliente['nome']; ?> —
+            <a class="btn" href="chat.php?id_cliente=<?php echo $cliente['id']; ?>&id_mecanico=<?php echo $id_mecanico; ?>">
+                Conversar
+            </a>
+        </p>
+    <?php
+        endwhile;
+    else:
+        echo "<p style='color: red;'>Nenhum cliente cadastrado no sistema.</p>";
+    endif;
+    ?>
+
+    <br><a href="logout.php" class="btn">Sair</a>
+</div>
 </body>
 </html>
